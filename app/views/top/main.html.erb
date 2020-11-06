@@ -1,0 +1,42 @@
+<h1>ショップ</h1>
+
+<% if flash[:name] then %>
+    <% name = flash[:name] %>
+    <% qty = flash[:qty] %>
+    <% m = "#{name} を #{qty}個、カートに追加しました。" %>
+    
+    <%= javascript_tag do %>
+        sendMessage("<%= m %>");
+    <% end %>
+<% end %>
+
+<div class="link">
+    <%= link_to '商品管理', products_path %>
+</div>
+
+<div class="link">
+    <%= link_to 'カートの中を見る', carts_path %>
+</div>
+<hr />
+<div id="list">
+    <% @products.each do |p| %>
+        <% pid = p.id %>
+        <div class="card">
+            <%= form_for @item, url: {controller: 'cart_items', action: :create} do |c| %>
+                <div class="name">
+                    <%= p.name %>
+                </div>
+                <div class="price">
+                    <%= p.price %>円
+                </div>
+                <div class="form">
+                    <%= c.hidden_field :product_id, value: pid %>
+                    <%= c.label :qty, '数量' %>
+                    <%= c.number_field :qty, min: "0", value: "0" %>
+                    <%= c.submit 'カートに入れる' %>
+                </div>
+            <% end %>
+        </div>
+        <br />
+    <% end %>
+</div>
